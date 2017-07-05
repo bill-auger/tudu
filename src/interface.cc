@@ -62,7 +62,8 @@ void Interface::main()
 			if (KEY_HOME == key) home();
 			if (KEY_END == key) end();
 			if (KEY_SF == key) move_down(); // shift+down
-			if (KEY_SR == key) move_up(); // shift+up
+			if (KEY_SR == key) move_up();   // shift+up
+			if (KEY_DC == key) del() ;      // <DEL>
 			config.clearKeys();
 		}
 		else if (0xc == key)  //  Ctrl-L
@@ -129,6 +130,11 @@ void Interface::main()
 			if (L"help" == action) help();
 		}
 		else if (key==' ') done();
+		else if (key == 9 ) editText() ; // <TAB>
+		else if (key == 10) addLine() ;  // <RETURN>
+		else if (key == 27)              // <ESC>
+		{ if (!writer.save()) screen.infoMsg("File can not be saved") ; else break ; }
+		else printf("key=%d" , key);
 	}
 }
 

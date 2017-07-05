@@ -333,10 +333,11 @@ void Screen::resizeTerm()
 		win++;
 	}
 }
-
+#define TASK_PAD 1
+#define TASK_DEPTH 4
 int Screen::startTitle(int depth)
 {
-	return depth * 4 + 7;
+	return (depth * TASK_DEPTH) + TASK_PAD + 5;
 }
 
 void Screen::drawTitle(int line, int depth, wstring& title, int startLine)
@@ -376,7 +377,8 @@ void Screen::drawTask(int line, int depth, ToDo& t, bool isCursor)
 	wtree->_move(line, 0);
 
 	/* identation */
-	for (int i = 0; i < depth; ++i) wtree->_addstr(L"    ");
+	for (int i = 0; i < depth; ++i)
+		for (int j = 0; j < TASK_DEPTH; ++j) wtree->_addstr(L" ");
 	if (config.getVisualTree())
 		if (t.haveChild())
 		{
@@ -386,26 +388,26 @@ void Screen::drawTask(int line, int depth, ToDo& t, bool isCursor)
 				wtree->_addstr("(-)");
 		}
 		else
-			wtree->_addstr("   ");
+			for (int i = 0; i < TASK_PAD; ++i) wtree->_addstr(L" ");
 	else
-		wtree->_addstr("   ");
+		for (int i = 0; i < TASK_PAD; ++i) wtree->_addstr(L" ");
 
 	if (t.done())
 	{
-		wtree->_addstr("[X] ");
+		wtree->_addstr(" [X] ");
 	}
 	else if (!t.haveChild() || config.getHidePercent())
 	{
-		wtree->_addstr("[ ] ");
+		wtree->_addstr(" [ ] ");
 	}
 	else if (100 == chinf.percent)
 	{
-		wtree->_addstr("100 ");
+		wtree->_addstr("DONE ");
 	}
 	else
 	{
 		char str[8];
-		sprintf(str, "%2d%% ", chinf.percent);
+		sprintf(str, "%3d%% ", chinf.percent);
 		wtree->_addstr(str);
 	}
 	/* add the title split to the length of screen */
